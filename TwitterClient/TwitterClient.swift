@@ -10,7 +10,7 @@ import UIKit
 import BDBOAuth1Manager
 
 class TwitterClient: BDBOAuth1SessionManager {
-
+    
     static let sharedInstance = TwitterClient(baseURL: NSURL(string: "https://api.twitter.com")!, consumerKey: "QbHdSNq1dWAapxWxKsgKvL8Ws", consumerSecret: "OkByjkbvW6f74GWS905yboPuOtU22vSZQQIaopRVtOFFuVAsdT")
     
     var loginSuccess: (() -> ())?
@@ -32,12 +32,24 @@ class TwitterClient: BDBOAuth1SessionManager {
         }
     }
     
+    func logout() {
+        User.currentUser = nil
+        deauthorize()
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(User.userDidLogoutNotification, object: nil)
+    }
+    
     func handleOpenURL(url: NSURL) {
         let requestToken = BDBOAuth1Credential(queryString: url.query)
         
         fetchAccessTokenWithPath("oauth/access_token", method: "POST", requestToken: requestToken, success: { (accessToken: BDBOAuth1Credential!) -> Void in
-            self.loginSuccess?()
             
+            self.currentAccount({ (user: User) in
+                User.currentUser = user
+                self.loginSuccess?()
+            }, failure: { (error: NSError) in
+                self.loginFailure?(error)
+            })
         }) { (error: NSError!) in
             print("Error: \(error.localizedDescription)")
             self.loginFailure?(error)
@@ -56,19 +68,16 @@ class TwitterClient: BDBOAuth1SessionManager {
             })
     }
     
-    func currentAccount() {
+    func currentAccount(success: (User) -> (), failure: (NSError) -> ()) {
         GET("1.1/account/verify_credentials.json", parameters: nil, success: { (task: NSURLSessionDataTask, response: AnyObject?) -> Void in
             let userDictionary = response as! NSDictionary
             let user = User(dictionary: userDictionary)
-            //print("user: \(user)")
             
-            print("name: \(user.name)")
-            print("screenname: \(user.screenname)")
-            print("profile url: \(user.profileURL)")
-            print("description: \(user.tagline)")
+            success(user)
+
             }, failure: { (task: NSURLSessionDataTask?, error: NSError) -> Void in
-                
-        })
+                failure(error)
+            })
     }
     
 }

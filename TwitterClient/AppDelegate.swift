@@ -13,10 +13,43 @@ import BDBOAuth1Manager
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    func showLoginScreen() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier("LoginViewController")
+        window?.rootViewController = vc
+    }
+    
+    func showTabBarController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let homeNavigationController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController") as! UINavigationController
+        homeNavigationController.tabBarItem.title = "Home"
+        homeNavigationController.tabBarItem.image = UIImage(named: "home")
+        //let homeViewController = homeNavigationController.topViewController as! TimelineViewController
+        
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [homeNavigationController]
+        
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
+    }
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if User.currentUser != nil {
+            showTabBarController()
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserverForName(User.userDidLogoutNotification, object: nil, queue: NSOperationQueue.mainQueue()) { (NSNotification) in
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateInitialViewController()
+            
+            self.window?.rootViewController = vc
+        }
+        
         return true
     }
 
@@ -43,8 +76,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
-        print(url.description)
-        
         TwitterClient.sharedInstance.handleOpenURL(url)
         
         return true
