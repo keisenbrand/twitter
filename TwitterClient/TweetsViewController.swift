@@ -24,6 +24,8 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var isFirstLoad = true
     let refreshControl = UIRefreshControl()
+    var timelineType = "home"
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,14 +56,21 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellID) as! FeedCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("FeedCell") as! FeedCell
         
         let tweet = tweets[indexPath.row]
         cell.usernameLabel.text = tweet.user?.name as? String
         
         if let profileURL = tweet.user?.profileURL {
-            cell.profileImageView.setImageWithURL(profileURL)
+            let tempImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+            tempImageView.setImageWithURLRequest(NSURLRequest(URL: profileURL), placeholderImage: nil, success: { (request: NSURLRequest, response: NSHTTPURLResponse?, image: UIImage) in
+                cell.profileImageView.setImage(image, forState: .Normal)
+                cell.profileImageView.selected = false
+                }, failure: { (request: NSURLRequest, response:NSHTTPURLResponse?, error: NSError) in
+                    print(error.localizedDescription)
+            })
         }
+        cell.profileImageView.tag = indexPath.row
         
         if let screenname = tweet.user?.screenname {
             cell.screennameLabel.text = "@" + (screenname as String)
@@ -100,15 +109,30 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
             MBProgressHUD.hideHUDForView(self.view, animated: true)
         }
     }
+    
+    func showProfile(sender: UIButton) {
+        performSegueWithIdentifier("profileSegue", sender: sender)
+    }
 
-    /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
+        
         // Pass the selected object to the new view controller.
+        
+        if segue.identifier == "detailSegue" {
+            let vc = segue.destinationViewController as! DetailViewController
+            let cell = sender as! FeedCell
+            let indexPath = tableView.indexPathForCell(cell)
+            vc.tweet = tweets[indexPath!.row]
+        } else if segue.identifier == "profileSegue" {
+            let navigationController = segue.destinationViewController as! UINavigationController
+            let vc = navigationController.topViewController as! ProfileViewController
+            let button = sender as! UIButton
+            vc.user = tweets[button.tag].user
+        }
     }
-    */
 
 }

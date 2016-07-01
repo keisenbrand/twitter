@@ -9,7 +9,8 @@
 import UIKit
 
 class FeedCell: UITableViewCell {
-    @IBOutlet weak var profileImageView: UIImageView!
+    
+    @IBOutlet weak var profileImageView: UIButton!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var screennameLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
@@ -24,10 +25,6 @@ class FeedCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-    }
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        endEditing(true)
     }
 
 }

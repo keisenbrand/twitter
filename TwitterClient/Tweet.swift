@@ -15,6 +15,9 @@ class Tweet: NSObject {
     var retweetCount: Int = 0
     var favoritesCount: Int = 0
     var user: User?
+    var idStr: String?
+    var favorited: Int = 0
+    var retweeted: Int = 0
     
     init(dictionary: NSDictionary) {
         text = dictionary["text"] as? String
@@ -29,6 +32,11 @@ class Tweet: NSObject {
             formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
             timestamp = formatter.dateFromString(timeStampString)
         }
+        
+        idStr = dictionary["id_str"] as? String
+        
+        favorited = dictionary["favorited"] as? Int ?? 0
+        retweeted = dictionary["retweeted"] as? Int ?? 0
         
         if let userData = dictionary["user"] as? NSDictionary {
             self.user = User(dictionary: userData)
@@ -80,6 +88,36 @@ class Tweet: NSObject {
         
         return "1s"
         
+    }
+    
+    func favorite(success: () -> (), failure: (NSError) -> ()) {
+        TwitterClient.sharedInstance.favorite(self, success: { () in
+            self.favoritesCount += 1
+            self.favorited = 1
+            success()
+        }) { (error: NSError) in
+            failure(error)
+        }
+    }
+    
+    func unfavorite(success: () -> (), failure: (NSError) -> ()) {
+        TwitterClient.sharedInstance.unfavorite(self, success: { () in
+            self.favoritesCount -= 1
+            self.favorited = 0
+            success()
+        }) { (error: NSError) in
+            failure(error)
+        }
+    }
+    
+    func retweet(success: () -> (), failure: (NSError) -> ()) {
+        TwitterClient.sharedInstance.retweet(self, success: { () in
+            self.retweetCount += 1
+            self.retweeted = 1
+            success()
+        }) { (error: NSError) in
+            failure(error)
+        }
     }
     
 }
