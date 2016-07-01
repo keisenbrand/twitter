@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     
     let cellID = "FeedCell"
+    let cellHeightEstimate: CGFloat = 90
     
     var tweets = [Tweet]() {
         didSet {
@@ -20,6 +22,7 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    var isFirstLoad = true
     let refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
@@ -27,16 +30,14 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 130
+        tableView.estimatedRowHeight = cellHeightEstimate
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        TwitterClient.sharedInstance.homeTimeline({ (tweets: [Tweet]) in
-            self.tweets.appendContentsOf(tweets)
-            }, failure: { (error: NSError) in
-                print(error.localizedDescription)
-        })
-        
-        // Do any additional setup after loading the view.
+        // Initialize a UIRefreshControl
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        //tableView.insertSubview(networkErrorView, atIndex: 0)
+        tableView.insertSubview(refreshControl, atIndex: 0)
+        refreshControlAction(refreshControl)
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,6 +78,27 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    }
+    
+    func refreshControlAction(refreshControl: UIRefreshControl) {
+        if isFirstLoad {
+            // Display HUD right before the request is made
+            MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        }
+        
+        TwitterClient.sharedInstance.homeTimeline({ (tweets: [Tweet]) in
+            self.tweets = []
+            self.tweets.appendContentsOf(tweets)
+            }, failure: { (error: NSError) in
+                print(error.localizedDescription)
+        })
+        
+        refreshControl.endRefreshing()
+        if self.isFirstLoad {
+            self.isFirstLoad = false
+            // Hide HUD once the network request comes back (must be done on main UI thread)
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+        }
     }
 
     /*

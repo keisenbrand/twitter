@@ -31,6 +31,7 @@ class User: NSObject {
     }
     
     static let userDidLogoutNotification = "UserDidLogout"
+    static let userDidLoginNotification = "UserDidLogin"
 
     static var _currentUser: User?
     

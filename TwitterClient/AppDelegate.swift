@@ -44,10 +44,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         NSNotificationCenter.defaultCenter().addObserverForName(User.userDidLogoutNotification, object: nil, queue: NSOperationQueue.mainQueue()) { (NSNotification) in
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateInitialViewController()
-            
-            self.window?.rootViewController = vc
+            self.showLoginScreen()
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserverForName(User.userDidLoginNotification, object: nil, queue: NSOperationQueue.mainQueue()) { (notification: NSNotification) in
+            self.showTabBarController()
         }
         
         return true
