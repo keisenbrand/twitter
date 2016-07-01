@@ -177,7 +177,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u2n-QP-sZ7">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u2n-QP-sZ7">
                                                     <rect key="frame" x="8" y="8" width="73" height="73"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="73" id="7je-cM-HI4"/>
@@ -310,8 +310,11 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="charactersLeftLabel" destination="Wu5-YF-an4" id="AqZ-ya-1yl"/>
+                        <outlet property="imageView" destination="7hu-tT-Llu" id="z5I-dE-Uff"/>
+                        <outlet property="screennameLabel" destination="lGx-FG-Cj3" id="nRa-9x-zFq"/>
                         <outlet property="textView" destination="B97-ek-7IM" id="wvx-w4-gYG"/>
                         <outlet property="tweetButton" destination="lPC-Gq-O9O" id="t4y-96-W7p"/>
+                        <outlet property="usernameLabel" destination="JBN-M8-2wK" id="Fbp-11-mM9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rli-au-lB7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -393,22 +396,25 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2uc-ek-du9">
-                                <rect key="frame" x="48" y="297" width="30" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2uc-ek-du9">
+                                <rect key="frame" x="31" y="276" width="65" height="72"/>
+                                <state key="normal" image="reply"/>
                                 <connections>
                                     <action selector="replyButtonPressed:" destination="FIs-Nh-oLp" eventType="touchUpInside" id="CDr-ko-2ss"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z4W-6Y-8zH">
-                                <rect key="frame" x="299" y="297" width="30" height="30"/>
-                                <connections>
-                                    <action selector="favoriteButtonPressed:" destination="FIs-Nh-oLp" eventType="touchUpInside" id="A4A-rQ-Ex7"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ujp-Ed-gwK">
-                                <rect key="frame" x="172" y="297" width="30" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ujp-Ed-gwK">
+                                <rect key="frame" x="150" y="276" width="75" height="72"/>
+                                <state key="normal" image="retweet_before"/>
                                 <connections>
                                     <action selector="retweetButtonPressed:" destination="FIs-Nh-oLp" eventType="touchUpInside" id="Zl2-QP-6lm"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z4W-6Y-8zH">
+                                <rect key="frame" x="287" y="276" width="54" height="72"/>
+                                <state key="normal" image="like_before"/>
+                                <connections>
+                                    <action selector="favoriteButtonPressed:" destination="FIs-Nh-oLp" eventType="touchUpInside" id="A4A-rQ-Ex7"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -514,5 +520,8 @@
     </scenes>
     <resources>
         <image name="Image" width="50" height="50"/>
+        <image name="like_before" width="27" height="36"/>
+        <image name="reply" width="65" height="72"/>
+        <image name="retweet_before" width="37" height="36"/>
     </resources>
 </document>

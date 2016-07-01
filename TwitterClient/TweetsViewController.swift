@@ -62,13 +62,8 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         cell.usernameLabel.text = tweet.user?.name as? String
         
         if let profileURL = tweet.user?.profileURL {
-            let tempImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-            tempImageView.setImageWithURLRequest(NSURLRequest(URL: profileURL), placeholderImage: nil, success: { (request: NSURLRequest, response: NSHTTPURLResponse?, image: UIImage) in
-                cell.profileImageView.setImage(image, forState: .Normal)
-                cell.profileImageView.selected = false
-                }, failure: { (request: NSURLRequest, response:NSHTTPURLResponse?, error: NSError) in
-                    print(error.localizedDescription)
-            })
+            let data = NSData(contentsOfURL: profileURL)!
+            cell.profileImageView.setImage(UIImage(data: data), forState: .Normal)
         }
         cell.profileImageView.tag = indexPath.row
         

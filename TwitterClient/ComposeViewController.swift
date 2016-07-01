@@ -7,15 +7,28 @@
 //
 
 import UIKit
+import MBProgressHUD
+
+protocol ComposeViewControllerDelegate : class {
+    func didPostTweet(tweet: Tweet)
+}
 
 class ComposeViewController: UIViewController, UITextViewDelegate {
     
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var tweetButton: UIButton!
     @IBOutlet weak var charactersLeftLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var screennameLabel: UILabel!
+    
     
     let tweetPlaceholder = "What's happening?"
     let characterLimit = 140
+    
+    var user = User.currentUser
+    
+    weak var delegate: ComposeViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +38,24 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
         textView.text = tweetPlaceholder
         textView.textColor = UIColor.lightGrayColor()
         textView.delegate = self
+        
+        if let user = user {
+            usernameLabel.text = user.name as? String
+            
+            if user.screenname == User.currentUser?.screenname {
+                navigationItem.title = "My Profile"
+            }
+            
+            if let profileURL = user.profileURL {
+                
+                imageView.setImageWithURL(profileURL)
+            }
+            
+            if let screenname = user.screenname {
+                screennameLabel.text = "@" + (screenname as String)
+            }
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -67,7 +98,12 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func postTweet(sender: AnyObject) {
-        
+        TwitterClient.sharedInstance.postTweet(textView.text, success: { (tweet: Tweet) in
+            self.delegate?.didPostTweet(tweet)
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }) { (error: NSError) in
+            print(error.localizedDescription)
+        }
     }
     
     @IBAction func onCancel(sender: AnyObject) {

@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let homeNavigationController = storyboard.instantiateViewControllerWithIdentifier("TweetsNavigationController") as! UINavigationController
         homeNavigationController.tabBarItem.title = "Home"
-        homeNavigationController.tabBarItem.image = UIImage(named: "home")
+        homeNavigationController.tabBarItem.image = UIImage(named: "search_icon")
         let homeViewController = homeNavigationController.topViewController as! TweetsViewController
         homeViewController.timelineType = "home"
         

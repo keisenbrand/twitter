@@ -53,12 +53,6 @@ class ProfileViewController: UIViewController {
             
             followingLabel.text = "\(user.following)"
             followersLabel.text = "\(user.followers)"
-            
-            if user.followers != 1 {
-                followersLabel.text = "Followers"
-            } else {
-                followersLabel.text = "Follower"
-            }
         }
     }
 

@@ -31,12 +31,12 @@ class DetailViewController: UIViewController {
         navigationItem.title = "View Tweet"
         navigationItem.backBarButtonItem?.title = "Back"
         
-        replyButton.setImage(UIImage(named: "reply"), forState: .Highlighted)
-        
-        retweetButton.setImage(UIImage(named: "retweet_before"), forState: .Highlighted)
-        retweetButton.setImage(UIImage(named: "retweet_after"), forState: .Selected)
-        
-        favoriteButton.setImage(UIImage(named: "like_after"), forState: .Selected)
+//        replyButton.setImage(UIImage(named: "reply"), forState: .Normal)
+//        
+//        retweetButton.setImage(UIImage(named: "retweet_before"), forState: .Normal)
+//        retweetButton.setImage(UIImage(named: "retweet_after"), forState: .Selected)
+//        
+//        favoriteButton.setImage(UIImage(named: "like_after"), forState: .Normal)
         
         updateView()
     }
